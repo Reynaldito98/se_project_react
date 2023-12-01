@@ -5,8 +5,8 @@ import CardSection from '../CardSection/CardSection';
 function Main (props) {
     return (
         <main className="content">
-            <WeatherCard getWeatherInfo = {props.getWeatherInfo}/>
-            <CardSection getWeatherInfo = {props.getWeatherInfo} defaultClothingItems = {props.defaultClothingItems} openModal={props.openModal}/>
+            <WeatherCard temp={props.temp} weather={props.weather}/>
+            <CardSection defaultClothingItems = {props.defaultClothingItems} openModal={props.openModal} temp={props.temp} tempDescription={props.tempDescription}/>
         </main>
     )
 }
