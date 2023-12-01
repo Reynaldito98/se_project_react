@@ -4,14 +4,13 @@ import closeButton from '../../images/Group 119.png';
 import React from 'react';
 
 function ItemModal(props) {
-    function handleClick(evt) {
-        evt.preventDefault();
+    function handleClick() {
         props.onClose();
     }
 
     function handleRemoteClick(evt){
         if (evt.target === evt.currentTarget) { 
-            handleClick(evt);
+            handleClick();
         }
     }
 
@@ -19,17 +18,20 @@ function ItemModal(props) {
         if (!props.modalOpened) return;
         function handleEscClose(evt) {
             if(evt.key === 'Escape') {
-                handleClick(evt) ;   
+                handleClick() ;   
             }
         }
 
         window.addEventListener('keydown', handleEscClose);
+        return () => {
+            window.removeEventListener("keydown", handleEscClose);  // this removes the listener
+        };
     }, [props.modalOpened])
 
     return (
         <div onMouseDown={handleRemoteClick} className={`modal modal-image ${(props.modalOpened)?'modal_opened':''}`}>
             <div className="modal-image__container">
-                <img src={props.card.link} className="modal-image__image" alt="item picture"></img>
+                <img src={props.card.link} className="modal-image__image" alt={props.card.name}></img>
                 <p className="modal-image__item-name">{props.card.name}</p>
                 <p className="modal-image__weather">Weather: <span className="modal-image__weather-type">{props.card.weather}</span></p>
                 <button className="modal-image__close-button" onClick={props.onClose}><img src={closeButton} alt="modal close button"></img></button>

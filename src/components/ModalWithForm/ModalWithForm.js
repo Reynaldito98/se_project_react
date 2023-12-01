@@ -23,6 +23,9 @@ function ModalWithForm(props) {
         }
 
         window.addEventListener('keydown', handleEscClose);
+        return () => {
+            window.removeEventListener("keydown", handleEscClose);
+        };
     }, [props.modalOpened])
 
     return (
@@ -35,7 +38,7 @@ function ModalWithForm(props) {
     
                     <button type="submit" className="modal__button">{props.buttonText}</button>
     
-                    <button className="modal__close-button" onClick={handleClick}><img src={closeButton} alt="modal close button"></img></button>
+                    <button className="modal__close-button" onClick={handleClick} type="button"><img src={closeButton} alt="modal close button"></img></button>
                 </form>
             </div>
         </div>
