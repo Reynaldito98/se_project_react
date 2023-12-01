@@ -12,14 +12,13 @@ import nightClear from '../../images/NightClear.png';
 import nightCloudy from '../../images/NightCloudy.png';
 import nightSnow from '../../images/NightSnow.png';
 import nightMist from '../../images/NightMist.png';
-import { makeApiRequest } from '../../utils/utils';
 
-function WeatherCard () {
+function WeatherCard (props) {
     const [temp, setTemp] = React.useState(0);
     const [weather, setWeather] = React.useState('');
 
     React.useEffect(() => {
-        makeApiRequest()
+        props.getWeatherInfo()
             .then(data => {
                 if((Date.now()/1000) > data.sys.sunset || (Date.now()/1000) < data.sys.sunrise){
                     if(data.weather[0].main === 'Thunderstorm'){
@@ -53,7 +52,7 @@ function WeatherCard () {
                 setTemp(data.main.temp);
             })
             .catch(err => console.log(err))
-    })
+    }, [])
 
     return (
         <section className="weather-card" style={{

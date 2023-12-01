@@ -1,11 +1,12 @@
+import '../ModalWithForm/ModalWithForm.css';
 import './ItemModal.css';
 import closeButton from '../../images/Group 119.png';
 import React from 'react';
 
-function ItemModal() {
+function ItemModal(props) {
     function handleClick(evt) {
         evt.preventDefault();
-        document.querySelector('.modal-image').classList.remove('modal-image_opened');
+        props.onClose();
     }
 
     function handleRemoteClick(evt){
@@ -21,21 +22,20 @@ function ItemModal() {
             }
         }
 
-        document.addEventListener('keydown', handleEscClose);
+        window.addEventListener('keydown', handleEscClose);
 
         return () => {
-            document.removeEventListener('keydown', handleEscClose);
+            window.removeEventListener('keydown', handleEscClose);
         }
-    })
+    }, [])
 
     return (
-        <div onMouseDown={handleRemoteClick} className='modal-image'>
+        <div onMouseDown={handleRemoteClick} className={`modal modal-image ${(props.modalOpened)?'modal_opened':''}`}>
             <div className="modal-image__container">
-                <img className="modal-image__image"></img>
-                <p className="modal-image__item-name"></p>
-                <p className="modal-image__weather">Weather: <span className="modal-image__weather-type"></span></p>
-
-                <button className="modal-image__close-button" onClick={handleClick}><img src={closeButton}></img></button>
+                <img src={props.card.link} className="modal-image__image" alt="item picture"></img>
+                <p className="modal-image__item-name">{props.card.name}</p>
+                <p className="modal-image__weather">Weather: <span className="modal-image__weather-type">{props.card.weather}</span></p>
+                <button className="modal-image__close-button" onClick={props.onClose}><img src={closeButton}></img></button>
             </div>
         </div>
     )

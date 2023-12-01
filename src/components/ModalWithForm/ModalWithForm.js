@@ -5,7 +5,7 @@ import React from 'react';
 function ModalWithForm(props) {
     function handleClick(evt) {
         evt.preventDefault();
-        document.querySelector(`.modal_type_${props.name}`).classList.remove('modal_opened');
+        props.onClose();
     }
 
     function handleRemoteClick(evt){
@@ -15,21 +15,21 @@ function ModalWithForm(props) {
     }
 
     React.useEffect(() => {
-        function handleEscClose(evt) {
+        const handleEscClose = (evt) => {
             if(evt.key === 'Escape') {
                 handleClick(evt);    
             }
         }
 
-        document.addEventListener('keydown', handleEscClose);
+        window.addEventListener('keydown', handleEscClose);
 
         return () => {
-            document.removeEventListener('keydown', handleEscClose);
+            window.removeEventListener('keydown', handleEscClose);
         }
-    })
+    }, [])
 
     return (
-        <div onMouseDown={handleRemoteClick} className={`modal modal_type_${props.name}`}>
+        <div onMouseDown={handleRemoteClick} className={`modal modal_type_${props.name} ${(props.modalOpened)?'modal_opened':''}`}>
             <div className="modal__container">
                  <p>{props.title}</p>
     
