@@ -3,7 +3,6 @@ import ItemCard from '../ItemCard/ItemCard';
 
 function CardSection(props) {
     return (
-        <>
             <section className="card-section">
                 <p className="card-section__heading">Today is {Math.round(props.temp)}&#xb0;F/ You may want to wear:</p>
 
@@ -15,7 +14,6 @@ function CardSection(props) {
                     }
                 </ul>
             </section>
-        </>
     )
 }
 

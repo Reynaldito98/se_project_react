@@ -15,6 +15,7 @@ function ModalWithForm(props) {
     }
 
     React.useEffect(() => {
+        if (!props.modalOpened) return;
         const handleEscClose = (evt) => {
             if(evt.key === 'Escape') {
                 handleClick(evt);    
@@ -22,11 +23,7 @@ function ModalWithForm(props) {
         }
 
         window.addEventListener('keydown', handleEscClose);
-
-        return () => {
-            window.removeEventListener('keydown', handleEscClose);
-        }
-    }, [])
+    }, [props.modalOpened])
 
     return (
         <div onMouseDown={handleRemoteClick} className={`modal modal_type_${props.name} ${(props.modalOpened)?'modal_opened':''}`}>
@@ -38,7 +35,7 @@ function ModalWithForm(props) {
     
                     <button type="submit" className="modal__button">{props.buttonText}</button>
     
-                    <button className="modal__close-button" onClick={handleClick}><img src={closeButton}></img></button>
+                    <button className="modal__close-button" onClick={handleClick}><img src={closeButton} alt="modal close button"></img></button>
                 </form>
             </div>
         </div>
