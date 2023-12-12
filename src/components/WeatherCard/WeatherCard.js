@@ -1,4 +1,5 @@
 import './WeatherCard.css';
+import { CurrentTemperatureUnitContext } from '../../contexts/CurrentTemperatureUnitContext';
 
 function WeatherCard (props) {
     return (
