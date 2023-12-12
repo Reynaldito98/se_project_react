@@ -1,4 +1,4 @@
-import './AddItemModal';
+import './AddItemModal.css';
 import React from 'react';
 import ModalWithForm from '../ModalWithForm/ModalWithForm';
 
