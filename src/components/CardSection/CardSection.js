@@ -1,6 +1,5 @@
 import './CardSection.css';
 import ItemCard from '../ItemCard/ItemCard';
-import React from 'react';
 
 function CardSection(props) {
     return (
