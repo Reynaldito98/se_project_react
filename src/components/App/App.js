@@ -26,7 +26,7 @@ import nightMist from '../../images/NightMist.png';
 import {Switch, Route} from 'react-router-dom';   
 
 function App() {
-  const [modalOpened, setModalOpened] = React.useState(false);
+  const [addModalOpened, setAddModalOpened] = React.useState(false);
   const [imageModalOpened, setImageModalOpened] = React.useState(false);
   const [confirmationModalOpened, setConfirmationModalOpened] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
@@ -97,14 +97,17 @@ function App() {
         .then(data => {
           setClothingItems(data.reverse());
         })
+        .catch(err => {
+          console.log(err);
+        })
     }, [])
 
-  function handleModalOpen() {
-    setModalOpened(true);
+  function handleAddModalOpen() {
+    setAddModalOpened(true);
   }
 
-  function handleModalClose() {
-    setModalOpened(false);
+  function handleAddModalClose() {
+    setAddModalOpened(false);
   }
 
   function handleConfirmationModalOpen() {
@@ -126,12 +129,12 @@ function App() {
 
   function handleDeleteCard(evt) {
     evt.preventDefault();
-    setImageModalOpened(false);
-    setConfirmationModalOpened(false);
     deleteClothingItem(selectedCard._id)
       .then(() => {
         clothingItems.splice(clothingItems.indexOf(selectedCard), 1)
         setClothingItems([...clothingItems]);
+        setImageModalOpened(false);
+        setConfirmationModalOpened(false);
       })
       .catch(err => {
         console.log(err);
@@ -142,6 +145,7 @@ function App() {
     postClothingItem(name, weather, imageUrl)
       .then(data => {
         setClothingItems([data, ...clothingItems]);
+        handleAddModalClose();
       })
       .catch(err => console.log(err))
   }
@@ -155,17 +159,17 @@ function App() {
   return (
     <div className="page">
       <CurrentTemperatureUnitContext.Provider value={{ currentTemperatureUnit, handleToggleSwitchChange }}>
-          <Header currentDate={currentDate} openModal={handleModalOpen} cityName={cityName}/>
+          <Header currentDate={currentDate} openModal={handleAddModalOpen} cityName={cityName}/>
           <Switch>  
             <Route path="/profile">
-              <Profile defaultClothingItems = {clothingItems} openModal={handleModalOpen} openImageModal={handleImageModalOpen}/>
+              <Profile defaultClothingItems = {clothingItems} openModal={handleAddModalOpen} openImageModal={handleImageModalOpen}/>
             </Route>
             <Route path="/">
               <Main defaultClothingItems = {clothingItems} weather={weather} tempDescription={tempDescription} openImageModal={handleImageModalOpen} weatherData = {weatherData}/>
             </Route>
           </Switch>
           <ItemModal onClose={handleImageModalClose} modalOpened={imageModalOpened} card={selectedCard} onConfirmationModalOpen={handleConfirmationModalOpen}/>
-          <AddItemModal modalOpened={modalOpened} handleClose={handleModalClose} onAddItem={handleAddItemSubmit}/>
+          <AddItemModal modalOpened={addModalOpened} onAddItem={handleAddItemSubmit} handleClose={handleAddModalClose}/>
           <ConfirmationModal modalOpened={confirmationModalOpened} onClose={handleConfirmationModalClose} handleDeleteCard={handleDeleteCard}/>
           <Footer />
       </CurrentTemperatureUnitContext.Provider>

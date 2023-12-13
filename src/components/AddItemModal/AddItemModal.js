@@ -11,16 +11,19 @@ function AddItemModal(props) {
     const [errorUrlMessage, setErrorUrlMessage] = React.useState('');
     const [inputUrlValid, setInputUrlValid] = React.useState(false);
     const [inputRadioValid, setInputRadioValid] = React.useState(false);
-    const formRef = React.useRef(null);
     const inputNameRef = React.useRef(null);
     const inputUrlRef = React.useRef(null);
+
+    React.useEffect(() => {
+      setItemName('');
+      setImageURL('');
+      setWeather('');
+  }, [props.modalOpened]);
 
 
     function handleSubmit(e) {
         e.preventDefault();
-        props.handleClose();
         props.onAddItem(itemName, weather, imageURL);
-        formRef.current.reset();
     }
 
     function handleItemNameChange(evt) {
@@ -56,16 +59,16 @@ function AddItemModal(props) {
     }
 
     return (
-        <ModalWithForm title="New garment" buttonText="Add garment" name="garment" modalOpened={props.modalOpened} onClose={props.handleClose} handleSubmit={handleSubmit} formRef={formRef} inputNameValid={inputNameValid} inputUrlValid={inputUrlValid} inputRadioValid={inputRadioValid}>
+        <ModalWithForm title="New garment" buttonText="Add garment" name="garment" modalOpened={props.modalOpened} onClose={props.handleClose} handleSubmit={handleSubmit} inputNameValid={inputNameValid} inputUrlValid={inputUrlValid} inputRadioValid={inputRadioValid}>
             <div>
               <fieldset className="modal__fieldset">
                 <label className="modal__label" htmlFor="name">Name</label>
-                <input type="text" minLength="3" placeholder="Name" className={`modal__input ${inputNameValid?'':'modal__input_invalid'}`} id="name" onChange={handleItemNameChange} required ref={inputNameRef}></input>
+                <input type="text" minLength="3" placeholder="Name" className={`modal__input ${inputNameValid?'':'modal__input_invalid'}`} value={itemName} id="name" onChange={handleItemNameChange} required ref={inputNameRef}></input>
                 <span className="modal__error-message">{errorMessage}</span>
               </fieldset>
               <fieldset className="modal__fieldset">
                 <label className="modal__label" htmlFor="image">Image</label>
-                <input type="url" placeholder="Image URL" className={`modal__input ${inputUrlValid?'':'modal__input_invalid'}`} id="image" onChange={handleImageURLChange} required ref={inputUrlRef}></input>
+                <input type="url" placeholder="Image URL" className={`modal__input ${inputUrlValid?'':'modal__input_invalid'}`} id="image" onChange={handleImageURLChange} required ref={inputUrlRef} value={imageURL}></input>
                 <span className="modal__error-message">{errorUrlMessage}</span>
               </fieldset>
 

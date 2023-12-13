@@ -9,7 +9,7 @@ function Main (props) {
 
     return (
         <main className="content">
-            <WeatherCard weather={props.weather} weatherData={props.weatherData} temperatureUnit={temperatureUnit}/>
+            <WeatherCard weather={props.weather} weatherData={props.weatherData}/>
             <CardSection defaultClothingItems = {props.defaultClothingItems} openModal={props.openImageModal} tempDescription={props.tempDescription} weatherData={props.weatherData} temperatureUnit={temperatureUnit}/>
         </main>
     )

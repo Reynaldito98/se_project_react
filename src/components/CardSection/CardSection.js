@@ -1,6 +1,5 @@
 import './CardSection.css';
 import ItemCard from '../ItemCard/ItemCard';
-import { CurrentTemperatureUnitContext } from '../../contexts/CurrentTemperatureUnitContext';
 
 function CardSection(props) {
     return (

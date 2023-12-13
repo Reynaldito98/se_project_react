@@ -95,6 +95,36 @@
       "weather": "cold",
       "imageUrl": "https://img.kwcdn.com/garner-api/transfer/2023-7-24/08d3c98368505fb5460736ccc48b36d0.jpg?imageView2/2/w/800/q/70",
       "_id": 27
+    },
+    {
+      "name": "Boots",
+      "weather": "warm",
+      "imageUrl": "https://img.kwcdn.com/product/1e233122c8/0b927d9d-e7ed-45ba-9b0f-6c0442179591_800x800.png?imageView2/2/w/800/q/70",
+      "_id": 28
+    },
+    {
+      "name": "Socks",
+      "weather": "warm",
+      "imageUrl": "https://assets.bombas.com/image/fetch/c_crop,h_3040,w_3040/b_rgb:F5F8F8,c_scale,w_1068/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/2UlQAzLyxAL0maduJsfEyy/15f12fd23c4c88819ddfdee84b38f3ee/charcoal-black-layflat-product-transparent_9e6a1d06-68d4-49f5-be27-11eab45d5dc0.png",
+      "_id": 29
+    },
+    {
+      "name": "Hat",
+      "weather": "warm",
+      "imageUrl": "https://eu-images.contentstack.com/v3/assets/blt7dcd2cfbc90d45de/blteecaeeca3d9aadad/60dc0ad296e07e0f6e5582f5/Hat_16-1_copy_3.jpg?format=pjpg&auto=webp&quality=75%2C90&width=3840",
+      "_id": 30
+    },
+    {
+      "name": "Polo Shirt",
+      "weather": "hot",
+      "imageUrl": "https://img.kwcdn.com/garner-api/transfer/2023-6-27/7017eed413bb793e5912f6b7227520c6.jpg?imageView2/2/w/800/q/70",
+      "_id": 31
+    },
+    {
+      "name": "Jacket",
+      "weather": "cold",
+      "imageUrl": "https://img.kwcdn.com/garner-api/transfer/2023-10-16/b0b60be637c4823a12e3bfa67b91b2a1.jpg?imageView2/2/w/800/q/70",
+      "_id": 32
     }
   ]
 }

@@ -33,7 +33,7 @@ function ModalWithForm(props) {
             <div className="modal__container">
                  <p>{props.title}</p>
     
-                <form onSubmit={props.handleSubmit} ref={props.formRef} noValidate>
+                <form onSubmit={props.handleSubmit} noValidate>
                     {props.children}
     
                     <button type="submit" disabled={(props.inputNameValid && props.inputUrlValid && props.inputRadioValid)?'':'disabled'} className={((props.inputNameValid && props.inputUrlValid && props.inputRadioValid)?`modal__button`:`modal__button modal__button_inactive`)}>{props.buttonText}</button>

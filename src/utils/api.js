@@ -37,4 +37,4 @@ function deleteClothingItem(id) {
     .then(checkResponse)
 }
 
-export {getClothingItems, postClothingItem, deleteClothingItem};
+export {getClothingItems, postClothingItem, deleteClothingItem, checkResponse};
