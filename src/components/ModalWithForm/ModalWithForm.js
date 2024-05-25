@@ -1,11 +1,19 @@
 import './ModalWithForm.css';
 import closeButton from '../../images/Group 119.svg';
 import React from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
 function ModalWithForm(props) {
+    const history = useHistory();
+
     function handleClick(evt) {
         evt.preventDefault();
         props.onClose();
+    }
+
+    function handleClose(evt) {
+        evt.preventDefault();
+        history.push('/');
     }
 
     function handleRemoteClick(evt){
@@ -36,9 +44,11 @@ function ModalWithForm(props) {
                 <form onSubmit={props.handleSubmit} noValidate>
                     {props.children}
     
-                    <button type="submit" disabled={(props.inputNameValid && props.inputUrlValid && props.inputRadioValid)?'':'disabled'} className={((props.inputNameValid && props.inputUrlValid && props.inputRadioValid)?`modal__button`:`modal__button modal__button_inactive`)}>{props.buttonText}</button>
+                    <button type="submit" disabled={props.isDisabled?'':'disabled'} className={(props.isDisabled?`modal__button`:`modal__button modal__button_inactive`)}>{props.buttonText}</button>
+
+                    {props.secondButton===""?'':<Link to={`${props.route}`} className="modal__second-button">{props.secondButton}</Link>}
     
-                    <button className="modal__close-button" onClick={handleClick} type="button"><img src={closeButton} alt="modal close button"></img></button>
+                    <button className="modal__close-button" onClick={props.isLoggedIn?handleClick:handleClose} type="button"><img src={closeButton} alt="modal close button"></img></button>
                 </form>
             </div>
         </div>

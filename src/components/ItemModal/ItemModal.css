@@ -59,6 +59,14 @@
     transition: color 0.4s ease-in-out;
 }
 
+.modal-image__delete-btn_invisible{
+    display: none;
+}
+
+.modal-image__delete-btn_visible{
+    display: block;
+}
+
 .modal-image__delete-btn:hover{
     color: rgba(0, 0, 0);
 }

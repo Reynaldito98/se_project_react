@@ -15,6 +15,10 @@
     gap: 20px;
 }
 
+.header__right-column_invisible {
+    display: none;
+}
+
 .header__logo {
     width: 89px;
     height: 40px;
@@ -76,6 +80,23 @@
 
 .header__avatar:hover{
     box-shadow: 0px 0px 5px rgb(0, 0, 0);
+}
+
+.header__right-container {
+    display: flex;
+    gap: 20px;
+}
+
+.header__button {
+    color: #000;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 20px;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.header__button:hover{
+    opacity: 0.7;
 }
 
 @media screen and (max-width: 870px) {

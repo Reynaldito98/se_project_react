@@ -1,8 +1,13 @@
-const baseUrl = 'http://localhost:3001/items';
+const baseUrl = 'http://localhost:3001';
 const headers = {
-  "Content-type": "application/json"
+  "Content-type": "application/json",
 }
 
+const headersProtected = {
+  "Content-type": "application/json",
+  authorization: `Bearer ${localStorage.getItem('jwt')}`
+}
+ 
 const checkResponse = (res) => {
   if(res.ok){
     return res.json();
@@ -12,14 +17,15 @@ const checkResponse = (res) => {
 }
 
 function getClothingItems() {
-    return fetch(baseUrl)
-            .then(checkResponse)
+    return fetch(`${baseUrl}/items`, {
+              headers: headers})
+          .then(checkResponse)
 }
 
 function postClothingItem(name, weather, imageUrl) {
-  return fetch(baseUrl, {
+  return fetch(`${baseUrl}/items`, {
     method: 'POST',
-    headers: headers,
+    headers: headersProtected,
     body: JSON.stringify({
       name: name,
       weather: weather,
@@ -30,11 +36,38 @@ function postClothingItem(name, weather, imageUrl) {
 }
 
 function deleteClothingItem(id) {
-  return fetch(`${baseUrl}/${id}`, {
+  return fetch(`${baseUrl}/items/${id}`, {
     method: 'DELETE',
-    headers: headers
+    headers: headersProtected
   })
     .then(checkResponse)
 }
 
-export {getClothingItems, postClothingItem, deleteClothingItem, checkResponse};
+function editProfileInfo(name, avatar) {
+  return  fetch(`${baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: headersProtected,
+    body: JSON.stringify({
+      name, avatar 
+  })
+  })
+    .then(checkResponse)
+}
+
+function addCardLike(id) {
+  return fetch(`${baseUrl}/items/${id}/likes`, {
+    method: 'PUT',
+    headers: headersProtected
+  })
+    .then(checkResponse)
+}
+
+function deleteCardLike(id) {
+  return fetch(`${baseUrl}/items/${id}/likes`, {
+    method: 'DELETE',
+    headers: headersProtected,
+  })
+    .then(checkResponse)
+}
+
+export {getClothingItems, postClothingItem, deleteClothingItem, editProfileInfo, addCardLike, deleteCardLike, checkResponse, baseUrl};

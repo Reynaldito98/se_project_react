@@ -148,6 +148,25 @@
     
 }
 
+.modal__second-button {
+    margin-top: 32px;
+    font-size: 16px;
+    line-height: 20px;
+    color: #000;
+    opacity: 50%;
+    padding: 8px 16px;
+    background-color: transparent;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.4s ease-in-out;
+    text-decoration: none;
+}
+
+.modal__second-button:hover {
+    opacity: 70%;
+}
+
 @media screen and (max-width: 525px) {
     .modal__fieldset {
         width: 320px;

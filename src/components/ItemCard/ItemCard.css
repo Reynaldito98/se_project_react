@@ -6,6 +6,7 @@
     padding: 0px;
     margin: 0px;
     transition: box-shadow 0.8s ease-in-out;
+    position: relative;
 }
 
 .item-card:hover {
@@ -19,14 +20,33 @@
     border-radius: 20px;
 }
 
-.item-card__title {
-    position: absolute;
-    padding: 2px 12px;
+.item-card__title { 
     border-radius: 4px;
     background-color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 4px;
+}
+
+.item-card__info-container {
+    position: absolute;
     top: 15px;
-    left: 125px;
-    font-size: 16px;
+    left: 111px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.item-card__like-image {
+    width: 20px;
+}
+
+.item-card__like-btn {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+    margin-top: 5px;
 }
 
 @media screen and (max-width: 370px) {

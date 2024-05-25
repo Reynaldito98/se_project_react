@@ -1,10 +1,13 @@
 import './Header.css';
 import headerLogo from '../../images/logo.png';
-import headerAvatar from '../../images/avatar.jpg';
+import React from 'react';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
+import { CurrentUserContext } from '../../contexts/CurrentTemperatureUnitContext';
 import {Link} from 'react-router-dom';
 
 function Header(props) {
+    const user = React.useContext(CurrentUserContext);
+
     return (
             <header className="header">
                 <div className="header__left-column">
@@ -16,13 +19,20 @@ function Header(props) {
 
                 <div className="header__right-column">
                     <ToggleSwitch handleChange={props.handleToggleSwitchChange}/>
-                    <button className="header__add-clothes-button" onClick={props.openModal}>+ Add clothes</button>
-                    <div className="header__profile">
-                        <Link to='/profile' className="header__username">
-                            <p>Reynaldo Perez Pauli</p>
-                            <img src={headerAvatar} alt="header avatar" className="header__avatar"></img>
-                        </Link>
-                    </div>
+                    {props.isLoggedIn ?
+                        <div className="header__right-container">
+                            <button className="header__add-clothes-button" onClick={props.openModal}>+ Add clothes</button>
+                            <div className="header__profile">
+                                <Link to='/profile' className="header__username">
+                                    <p>{user.currentUser.name}</p>
+                                    <img src={user.currentUser.avatar} alt="header avatar" className="header__avatar"></img>
+                                </Link>
+                            </div>
+                        </div>  :
+                        <div className="header__right-container">
+                            <Link to='/register' className="header__button">Sign up</Link>
+                            <Link to='/login' className="header__button">Sign in</Link>
+                        </div>}
                 </div>
             </header>
     )

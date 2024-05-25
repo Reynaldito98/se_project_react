@@ -2,15 +2,21 @@ import '../ModalWithForm/ModalWithForm.css';
 import './ItemModal.css';
 import closeButton from '../../images/Group 119.png';
 import React from 'react';
+import { CurrentUserContext } from '../../contexts/CurrentTemperatureUnitContext';
 
 function ItemModal(props) {
-    function handleClick() {
+    const user = React.useContext(CurrentUserContext);
+    const isOwn = (props.card.owner === user.currentUser._id);  
+    const itemDeleteButtonClassName = `${isOwn?"modal-image__delete-btn_visible":"modal-image__delete-btn_invisible"}`;
+
+    function handleClick(evt) {
+        evt.preventDefault();
         props.onClose();
     }
 
     function handleRemoteClick(evt){
         if (evt.target === evt.currentTarget) { 
-            handleClick();
+            handleClick(evt);
         }
     }
 
@@ -18,7 +24,7 @@ function ItemModal(props) {
         if (!props.modalOpened) return;
         function handleEscClose(evt) {
             if(evt.key === 'Escape') {
-                handleClick() ;   
+                handleClick(evt);  
             }
         }
 
@@ -38,7 +44,7 @@ function ItemModal(props) {
                         <p className="modal-image__weather">Weather: <span className="modal-image__weather-type">{props.card.weather}</span></p>
                         <button className="modal-image__close-button" onClick={props.onClose}><img src={closeButton} alt="modal close button"></img></button>
                     </div>
-                    <button className="modal-image__delete-btn" onClick={props.onConfirmationModalOpen} type="button">Delete Item</button>
+                    <button className={`modal-image__delete-btn ${itemDeleteButtonClassName}`} onClick={props.onConfirmationModalOpen} type="button">Delete Item</button>
                 </div>
             </div>
         </div>

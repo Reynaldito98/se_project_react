@@ -91,12 +91,6 @@
       "_id": 26
     },
     {
-      "name": "Sweaters",
-      "weather": "cold",
-      "imageUrl": "https://img.kwcdn.com/garner-api/transfer/2023-7-24/08d3c98368505fb5460736ccc48b36d0.jpg?imageView2/2/w/800/q/70",
-      "_id": 27
-    },
-    {
       "name": "Boots",
       "weather": "warm",
       "imageUrl": "https://img.kwcdn.com/product/1e233122c8/0b927d9d-e7ed-45ba-9b0f-6c0442179591_800x800.png?imageView2/2/w/800/q/70",

@@ -7,10 +7,15 @@ import Main from '../Main/Main';
 import Profile from '../Profile/Profile';
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import AddItemModal from '../AddItemModal/AddItemModal';
+import RegisterModal from '../RegisterModal/RegisterModal';
+import EditProfileModal from '../EditProfileModal/EditProfileModal';
+import LoginModal from '../LoginModal/LoginModal';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { getWeatherInfo } from '../../utils/utils';
-import { getClothingItems, postClothingItem, deleteClothingItem } from '../../utils/api';
-import { CurrentTemperatureUnitContext } from '../../contexts/CurrentTemperatureUnitContext';
+import { getClothingItems, postClothingItem, deleteClothingItem, editProfileInfo, addCardLike, deleteCardLike } from '../../utils/api';
+import { CurrentTemperatureUnitContext, CurrentUserContext } from '../../contexts/CurrentTemperatureUnitContext';
 import { currentDate } from '../../utils/constants';
+import { loginUser, registerUser, getToken } from '../../utils/auth';
 import daySunny from '../../images/sunny.png';
 import dayRain from '../../images/dayRain.png';
 import dayRainStorm from '../../images/DayRainStorm.png';
@@ -23,11 +28,12 @@ import nightClear from '../../images/NightClear.png';
 import nightCloudy from '../../images/NightCloudy.png';
 import nightSnow from '../../images/NightSnow.png';
 import nightMist from '../../images/NightMist.png';
-import {Switch, Route} from 'react-router-dom';   
+import {Switch, Route, useHistory} from 'react-router-dom';   
 
 function App() {
   const [addModalOpened, setAddModalOpened] = React.useState(false);
   const [imageModalOpened, setImageModalOpened] = React.useState(false);
+  const [editProfileOpened, setEditProfileOpened] = React.useState(false);
   const [confirmationModalOpened, setConfirmationModalOpened] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [cityName, setCityName] = React.useState('');
@@ -36,71 +42,25 @@ function App() {
   const [weather, setWeather] = React.useState('');
   const [tempDescription, setTempDescription] = React.useState('');
   const [clothingItems, setClothingItems] = React.useState([]);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = React.useState('F');
+  const [currentUser, setCurrentUser] = React.useState({});
   const weatherData = {
     temperature: {
       C: `${Math.round(tempC)}°C`,
       F: `${Math.round(tempF)}°F`
     }
   };
-
-  React.useEffect(() => {
-      getWeatherInfo()
-          .then(data => {
-              setCityName(data.name);
-              setTempF(data.main.temp);
-              setTempC((data.main.temp - 32) * 5/9);
+  const history = useHistory();
 
 
-              if((Date.now()/1000) > data.sys.sunset || (Date.now()/1000) < data.sys.sunrise){
-                if(data.weather[0].main === 'Thunderstorm'){
-                    setWeather(nightRainStorm);
-                } else if(data.weather[0].main === 'Clear') {
-                    setWeather(nightClear);
-                } else if(data.weather[0].main === 'Rain' || data.weather[0].main === 'Drizzle') {
-                    setWeather(nightRain);
-                } else if(data.weather[0].main === 'Snow') {
-                    setWeather(nightSnow);
-                } else if(data.weather[0].main === 'Atmosphere') {
-                    setWeather(nightMist);
-                } else {
-                    setWeather(nightCloudy);
-                }
-            } else {
-                if(data.weather[0].main === 'Thunderstorm'){
-                    setWeather(dayRainStorm);
-                } else if(data.weather[0].main === 'Clear') {
-                    setWeather(daySunny);
-                } else if(data.weather[0].main === 'Rain' || data.weather[0].main === 'Drizzle') {
-                    setWeather(dayRain);
-                } else if(data.weather[0].main === 'Snow') {
-                    setWeather(daySnow);
-                } else if(data.weather[0].main === 'Atmosphere') {
-                    setWeather(dayMist);
-                } else {
-                    setWeather(dayCloudy);
-                }
-            }
+  function handleEditProfileOpen() {
+    setEditProfileOpened(true);
+  }
 
-            if(data.main.temp >= 86){
-              setTempDescription('hot');
-            } else if(data.main.temp <= 65) {
-              setTempDescription('cold');
-            } else {
-              setTempDescription('warm');
-            }
-          })
-          .catch(err => console.log(err))
-
-
-      getClothingItems()
-        .then(data => {
-          setClothingItems(data.reverse());
-        })
-        .catch(err => {
-          console.log(err);
-        })
-    }, [])
+  function handleEditProfileClose() {
+    setEditProfileOpened(false);
+  }  
 
   function handleAddModalOpen() {
     setAddModalOpened(true);
@@ -128,21 +88,21 @@ function App() {
   }
 
   function handleDeleteCard(evt) {
-    evt.preventDefault();
-    deleteClothingItem(selectedCard._id)
-      .then(() => {
-        clothingItems.splice(clothingItems.indexOf(selectedCard), 1)
-        setClothingItems([...clothingItems]);
-        setImageModalOpened(false);
-        setConfirmationModalOpened(false);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+      evt.preventDefault();
+      deleteClothingItem(selectedCard._id)
+        .then(() => {
+          clothingItems.splice(clothingItems.indexOf(selectedCard), 1)
+          setClothingItems([...clothingItems]);
+          setImageModalOpened(false);
+          setConfirmationModalOpened(false);
+        })
+        .catch(err => {
+          console.log(err);
+        })
   }
 
   function handleAddItemSubmit( name, weather, imageUrl) {
-    postClothingItem(name, weather, imageUrl)
+      postClothingItem(name, weather, imageUrl)
       .then(data => {
         setClothingItems([data, ...clothingItems]);
         handleAddModalClose();
@@ -150,30 +110,193 @@ function App() {
       .catch(err => console.log(err))
   }
 
+  function handleRegisterSubmit(name, avatar, email, password) {
+    registerUser(name, avatar, email, password)
+      .then(() => {
+        history.push('/login');
+      })
+      .catch(err => console.log(err));
+  }
+
+  function handleEditProfileSubmit(name, avatar) {
+      editProfileInfo(name, avatar)
+      .then((res) => {
+        setCurrentUser({
+          name: res.data.name,
+          avatar: res.data.avatar,
+          _id: res.data._id,
+          email: res.data.email,
+        })
+        handleEditProfileClose();
+      })
+      .catch(err => console.log(err))
+  }
+
+  function handleLoginSubmit( email, password) {
+    if(!email || !password) {
+      return;
+    }
+    //I tried to fix it by modifying the _id but still doesn't work until I reload the page
+    loginUser(email, password) 
+      .then((res) => {
+          if(res.token) {
+            localStorage.setItem('jwt', res.token);
+            setIsLoggedIn(true);
+            history.push('/');
+            getToken(res.token)
+            .then(data => {
+              setCurrentUser({
+                name: data.data.name,
+                avatar: data.data.avatar,
+                email: data.data.email,
+                _id: data.data._id
+              })  
+            })
+          }
+        }
+      )
+      .catch(err => console.log(err));
+  }
+
+  function handleSignOut(e) {
+    e.preventDefault();
+    localStorage.removeItem('jwt');
+    setIsLoggedIn(false);
+    history.push('/login');
+  }
+
+  function handleCardLike(id, isLiked) {
+        !isLiked ?
+          addCardLike(id) 
+          .then((updatedCard) => {
+            setClothingItems((cards) =>
+            cards.map((item) => (item._id === id ? updatedCard.data : item))
+            );
+          })
+          .catch(err => console.log(err))
+    :
+          deleteCardLike(id)
+          .then((updatedCard) => {
+            setClothingItems((cards) =>
+            cards.map((item) => (item._id === id ? updatedCard.data : item))
+          );
+        })
+          .catch(err => console.log(err))
+    }
+
   const handleToggleSwitchChange = () => {
-    (currentTemperatureUnit === 'F')
-      ? setCurrentTemperatureUnit('C')
+    (currentTemperatureUnit === 'F') ? setCurrentTemperatureUnit('C')
       : setCurrentTemperatureUnit('F');
   };
 
+  React.useEffect(() => {
+    getWeatherInfo()
+        .then(data => {
+            setCityName(data.name);
+            setTempF(data.main.temp);
+            setTempC((data.main.temp - 32) * 5/9);
+
+
+            if((Date.now()/1000) > data.sys.sunset || (Date.now()/1000) < data.sys.sunrise){
+              if(data.weather[0].main === 'Thunderstorm'){
+                  setWeather(nightRainStorm);
+              } else if(data.weather[0].main === 'Clear') {
+                  setWeather(nightClear);
+              } else if(data.weather[0].main === 'Rain' || data.weather[0].main === 'Drizzle') {
+                  setWeather(nightRain);
+              } else if(data.weather[0].main === 'Snow') {
+                  setWeather(nightSnow);
+              } else if(data.weather[0].main === 'Atmosphere') {
+                  setWeather(nightMist);
+              } else {
+                  setWeather(nightCloudy);
+              }
+            } else {
+                if(data.weather[0].main === 'Thunderstorm'){
+                    setWeather(dayRainStorm);
+                } else if(data.weather[0].main === 'Clear') {
+                    setWeather(daySunny);
+                } else if(data.weather[0].main === 'Rain' || data.weather[0].main === 'Drizzle') {
+                    setWeather(dayRain);
+                } else if(data.weather[0].main === 'Snow') {
+                    setWeather(daySnow);
+                } else if(data.weather[0].main === 'Atmosphere') {
+                    setWeather(dayMist);
+                } else {
+                    setWeather(dayCloudy);
+                }
+            }
+
+            if(data.main.temp >= 86){
+              setTempDescription('hot');
+            } else if(data.main.temp <= 65) {
+              setTempDescription('cold');
+            } else {
+              setTempDescription('warm');
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+
+
+      getClothingItems()
+        .then(data => {
+          setClothingItems(data.reverse());
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }, [])
+
+
+    React.useEffect(() => {
+      const jwt = localStorage.getItem('jwt');
+    
+      if(jwt) {
+        getToken(jwt)
+        .then(data => {
+          setIsLoggedIn(true);
+          setCurrentUser({
+            name: data.data.name,
+            avatar: data.data.avatar,
+            email: data.data.email,
+            _id: data.data._id,
+            }) 
+        })
+        .catch(err => console.log(err));
+      }
+    }, [isLoggedIn]);
+
   return (
-    <div className="page">
-      <CurrentTemperatureUnitContext.Provider value={{ currentTemperatureUnit, handleToggleSwitchChange }}>
-          <Header currentDate={currentDate} openModal={handleAddModalOpen} cityName={cityName}/>
-          <Switch>  
-            <Route path="/profile">
-              <Profile defaultClothingItems = {clothingItems} openModal={handleAddModalOpen} openImageModal={handleImageModalOpen}/>
-            </Route>
-            <Route path="/">
-              <Main defaultClothingItems = {clothingItems} weather={weather} tempDescription={tempDescription} openImageModal={handleImageModalOpen} weatherData = {weatherData}/>
-            </Route>
-          </Switch>
-          <ItemModal onClose={handleImageModalClose} modalOpened={imageModalOpened} card={selectedCard} onConfirmationModalOpen={handleConfirmationModalOpen}/>
-          <AddItemModal modalOpened={addModalOpened} onAddItem={handleAddItemSubmit} handleClose={handleAddModalClose}/>
-          <ConfirmationModal modalOpened={confirmationModalOpened} onClose={handleConfirmationModalClose} handleDeleteCard={handleDeleteCard}/>
-          <Footer />
-      </CurrentTemperatureUnitContext.Provider>
-    </div>
+    <CurrentUserContext.Provider value={{currentUser}}>
+        <div className="page">
+          <CurrentTemperatureUnitContext.Provider value={{ currentTemperatureUnit, handleToggleSwitchChange }}>
+              <Header currentDate={currentDate} openModal={handleAddModalOpen} cityName={cityName} isLoggedIn={isLoggedIn}/>
+              <Switch>  
+                <ProtectedRoute path="/profile" loggedIn={isLoggedIn}>
+                  <Profile defaultClothingItems={clothingItems} openModal={handleAddModalOpen} openImageModal={handleImageModalOpen} openEditModal={handleEditProfileOpen} handleSignOut={handleSignOut} onCardLike={handleCardLike} isLoggedIn={isLoggedIn}/>
+                </ProtectedRoute>
+                <Route path="/register">
+                  <RegisterModal modalOpened={true} onAddItem={handleRegisterSubmit} handleClose={handleAddModalClose} isLoggedIn={isLoggedIn}/>  
+                  <Main onCardLike={handleCardLike} defaultClothingItems = {clothingItems} weather={weather} tempDescription={tempDescription} openImageModal={handleImageModalOpen} weatherData = {weatherData} isLoggedIn={isLoggedIn}/>                                                                                                                       
+                </Route>
+                <Route path="/login">
+                  <LoginModal modalOpened={true} onAddItem={handleLoginSubmit} handleClose={handleAddModalClose} isLoggedIn={isLoggedIn}/>
+                  <Main onCardLike={handleCardLike} defaultClothingItems = {clothingItems} weather={weather} tempDescription={tempDescription} openImageModal={handleImageModalOpen} weatherData = {weatherData} isLoggedIn={isLoggedIn}/>
+                </Route>
+                <Route path="/">
+                  <Main onCardLike={handleCardLike} defaultClothingItems = {clothingItems} weather={weather} tempDescription={tempDescription} openImageModal={handleImageModalOpen} weatherData = {weatherData} isLoggedIn={isLoggedIn}/>
+                </Route>
+              </Switch>
+              <ItemModal onClose={handleImageModalClose} modalOpened={imageModalOpened} card={selectedCard} onConfirmationModalOpen={handleConfirmationModalOpen}/>
+              <EditProfileModal isLoggedIn={isLoggedIn} modalOpened={editProfileOpened} onAddItem={handleEditProfileSubmit} handleClose={handleEditProfileClose}/>
+              <AddItemModal isLoggedIn={isLoggedIn} modalOpened={addModalOpened} onAddItem={handleAddItemSubmit} handleClose={handleAddModalClose}/>
+              <ConfirmationModal modalOpened={confirmationModalOpened} onClose={handleConfirmationModalClose} handleDeleteCard={handleDeleteCard}/>
+              <Footer />
+          </CurrentTemperatureUnitContext.Provider>
+      </div>
+    </CurrentUserContext.Provider>
   );
 }
 
