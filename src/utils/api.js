@@ -2,11 +2,6 @@ const baseUrl = 'http://localhost:3001';
 const headers = {
   "Content-type": "application/json",
 }
-
-const headersProtected = {
-  "Content-type": "application/json",
-  authorization: `Bearer ${localStorage.getItem('jwt')}`
-}
  
 const checkResponse = (res) => {
   if(res.ok){
@@ -22,31 +17,38 @@ function getClothingItems() {
           .then(checkResponse)
 }
 
-function postClothingItem(name, weather, imageUrl) {
+function postClothingItem(name, weather, imageUrl, token) {
   return fetch(`${baseUrl}/items`, {
     method: 'POST',
-    headers: headersProtected,
+    headers: {
+      "Content-type": "application/json",
+      authorization: `Bearer ${token}`
+    },
     body: JSON.stringify({
-      name: name,
-      weather: weather,
-      imageUrl: imageUrl
+      name, weather, imageUrl
     })
   })
     .then(checkResponse)
 }
 
-function deleteClothingItem(id) {
+function deleteClothingItem(id, token) {
   return fetch(`${baseUrl}/items/${id}`, {
     method: 'DELETE',
-    headers: headersProtected
+    headers: {
+      "Content-type": "application/json",
+      authorization: `Bearer ${token}`
+    }
   })
     .then(checkResponse)
 }
 
-function editProfileInfo(name, avatar) {
+function editProfileInfo(name, avatar, token) {
   return  fetch(`${baseUrl}/users/me`, {
     method: 'PATCH',
-    headers: headersProtected,
+    headers: {
+      "Content-type": "application/json",
+      authorization: `Bearer ${token}`
+    },
     body: JSON.stringify({
       name, avatar 
   })
@@ -54,18 +56,24 @@ function editProfileInfo(name, avatar) {
     .then(checkResponse)
 }
 
-function addCardLike(id) {
+function addCardLike(id, token) {
   return fetch(`${baseUrl}/items/${id}/likes`, {
     method: 'PUT',
-    headers: headersProtected
+    headers: {
+      "Content-type": "application/json",
+      authorization: `Bearer ${token}`
+    }
   })
     .then(checkResponse)
 }
 
-function deleteCardLike(id) {
+function deleteCardLike(id, token) {
   return fetch(`${baseUrl}/items/${id}/likes`, {
     method: 'DELETE',
-    headers: headersProtected,
+    headers: {
+      "Content-type": "application/json",
+      authorization: `Bearer ${token}`
+    }
   })
     .then(checkResponse)
 }

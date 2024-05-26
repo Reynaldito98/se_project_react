@@ -88,8 +88,10 @@ function App() {
   }
 
   function handleDeleteCard(evt) {
+      const token = localStorage.getItem('jwt');
+
       evt.preventDefault();
-      deleteClothingItem(selectedCard._id)
+      deleteClothingItem(selectedCard._id, token)
         .then(() => {
           clothingItems.splice(clothingItems.indexOf(selectedCard), 1)
           setClothingItems([...clothingItems]);
@@ -102,7 +104,9 @@ function App() {
   }
 
   function handleAddItemSubmit( name, weather, imageUrl) {
-      postClothingItem(name, weather, imageUrl)
+      const token = localStorage.getItem('jwt');
+
+      postClothingItem(name, weather, imageUrl, token)
       .then(data => {
         setClothingItems([data, ...clothingItems]);
         handleAddModalClose();
@@ -119,7 +123,9 @@ function App() {
   }
 
   function handleEditProfileSubmit(name, avatar) {
-      editProfileInfo(name, avatar)
+      const token = localStorage.getItem('jwt');
+
+      editProfileInfo(name, avatar, token)
       .then((res) => {
         setCurrentUser({
           name: res.data.name,
@@ -136,7 +142,7 @@ function App() {
     if(!email || !password) {
       return;
     }
-    //I tried to fix it by modifying the _id but still doesn't work until I reload the page
+
     loginUser(email, password) 
       .then((res) => {
           if(res.token) {
@@ -166,8 +172,10 @@ function App() {
   }
 
   function handleCardLike(id, isLiked) {
+    const token = localStorage.getItem('jwt');
+
         !isLiked ?
-          addCardLike(id) 
+          addCardLike(id, token) 
           .then((updatedCard) => {
             setClothingItems((cards) =>
             cards.map((item) => (item._id === id ? updatedCard.data : item))
@@ -175,7 +183,7 @@ function App() {
           })
           .catch(err => console.log(err))
     :
-          deleteCardLike(id)
+          deleteCardLike(id, token)
           .then((updatedCard) => {
             setClothingItems((cards) =>
             cards.map((item) => (item._id === id ? updatedCard.data : item))
