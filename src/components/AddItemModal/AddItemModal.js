@@ -16,7 +16,6 @@ function AddItemModal(props) {
       React.useEffect(() => {
         setItemName('');
         setImageURL('');
-        setWeather('');
     }, [props.modalOpened]);
 
 
